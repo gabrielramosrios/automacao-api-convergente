@@ -37,8 +37,10 @@ jobs:
         
         # Runs a set of commands using the runners shell
       - name: Step 3 Execute collection
-        run: newman run ./AcessProfile.postman_collection.json -e ./Qa.postman_environment.json --global-var "token={{token}}" --reporters cli, -r htmlextra --reporter-htmlextra-export ./results/Report.html
-      # Runs a set of commands using the runners shell
+        run: newman AcessProfile.postman_collection.json --environment Qa.postman_environment.json --global-var "token={{token}}" --export-environment environment.json --reporters cli,html
+
+     
+     # Runs a set of commands using the runners shell
       - name: Step 4 Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
