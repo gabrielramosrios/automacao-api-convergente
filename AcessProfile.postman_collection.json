@@ -1,0 +1,410 @@
+{
+	"info": {
+		"_postman_id": "a502c4d5-58d3-4738-aec4-542191ff29cc",
+		"name": "AcessProfile",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Signup",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"fullName\":\"Murilo Ryan de Sousa Mendes\", \r\n    \"mail\":\"murilo@qacoders-treinamento.com\", \r\n    \"idCompany\": \"28.458.256/0001-99\", \r\n    \"password\": \"Murilo@123\", \r\n    \"confirmPassword\": \"Murilo@123\", \r\n    \"accessProfile\": \"Admin\", \r\n      \"audit\": [ \r\n        { \r\n            \"loginUser\": \"teste@teste.com\" \r\n        } \r\n    ] \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/signup",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"Token\", JSON.parse(responseBody).token)\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"mail\":\"murilo@qacoders-treinamento.com\",\r\n    \"password\": \"Murilo@123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/login",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "API - AccessProfile - success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.environment.set(\"_id\",JSON.parse(responseBody)._id);\r",
+							"\r",
+							"pm.test(\"Check is nameProfile is valid\", function () {\r",
+							"    pm.expect(pm.variables.get(\"Name\")).to.eql(JSON.parse(responseBody).nameProfile);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"function getRandomInt(min, max) {\r",
+							"  min = Math.ceil(1);\r",
+							"  max = Math.floor(1000);\r",
+							"  var num = Math.floor(Math.random() * (max - min) + min);\r",
+							"  return num\r",
+							"}\r",
+							"pm.environment.set(\"Group\",getRandomInt());\r",
+							"\r",
+							"function name(){\r",
+							"    var name = [\"Miguel\",\"Sophia\",\"Davi\",\"Alice\",\"Arthur\",\"Julia\",\"Pedro\",\"Isabely\",\"Gabriel\",\"Manuela\",\"Laura\",\"Lucas\",\"Flavia\",\"Luiza\",\"Matues\",\"Noah\",\"Valentina\",\"Rafael\",\"Giovana\",\"Heitor\",\"Enzo\",\"Helena\",\"Guilherme\",\"Beatriz\",\"Nicolas\",\"Leticia\",\"Lorenzo\",\"Lara\",\"Gustavo\",\"Mariana\",\"Felipe\",\"Nicole\",\"Samuel\",\"Joice\",\"Dener\",\"Rafaela\",\"Augusto\",\"Heloisa\",\"Daniel\",\"Isadora\",\"Vitor\",\"Livia\",\"Leonardo\",\"Henrique\",\"Juliana\",\"Theo\",\"Lorena\",\"Murilo\",\"Gabriela\",\"Eduardo\",\"Yasmim\",\"Pedro\",\"Henriqueta\",\"Isabelly\",\"Pietro\",\"Sarah\",\"Kaua\",\"Jaqueline\",\"Isaac\",\"Leticia\",\"Caio\"];\r",
+							"\r",
+							"    var randomItem = name[Math.floor(Math.random()* name.length)];\r",
+							"    return randomItem;\r",
+							"}\r",
+							"pm.environment.set(\"Name\",name());\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Token}}",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{   \r\n    \"nameProfile\": \"{{Name}}\",\r\n    \"accessGroup\": {{Group}},\r\n   \"audit\": [\r\n        {\r\n            \"registrationDate\": \"{{DateNow}}\",\r\n            \"loginUser\": \"{{LoginUser}}\",\r\n            \"dateChangeRegister:\": \"{{DateNow}}\",\r\n            \"loginChangeRegister\": \"false\",\r\n            \"registration\":\"{{Registration}}\",\r\n            \"idCompany\": \"{{IdCompany}}\"\r\n        }\r\n    ]\r\n}\r\n\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/accessProfiles",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"accessProfiles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "API  - AccessProfiles - Get Id",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Campo Nome esta correto\", () => {\r",
+							"  const responseJson = pm.response.json();\r",
+							" \r",
+							"  pm.expect(responseJson.nameProfile).to.eql(JSON.parse (responseBody).nameProfile);\r",
+							"  ;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Token}}",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/accessProfiles/?_id={{_id}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"accessProfiles",
+						""
+					],
+					"query": [
+						{
+							"key": "_id",
+							"value": "{{_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "API - AccessProfile - PUT",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"nameProfile = \"nameProfile\"\r",
+							"function lastName() {    \r",
+							"    var lastName = [\"Alves da Silva\", \"Andrade Barbosa\", \"Barbosa Oliveira\", \"Oliveira da Silva\", \"Alves Pereira\", \"Conceição Barbosa\", \"Allen Young\", \"Hernandez King\", \"Wright Lopez\", \"Hill Scott\", \"Green Adams\", \"Conceição da Costa\", \"da Costa Oliveira\", \"Rodrigues de Oliveira\", \"Amaral Neto de Souza\", \"Pereira da Conceição\", \"Barros Neto de Andrade\", \"Borges de Andrade Pereira da Silva\", \"Batista Campos do Amaral\", \"Cardoso de Oliveira\", \"Pontes Guimarães\", \"Dias de Jesus\", \"Barbos de Lima\", \"Gonçalves da Silva\", \"Gonsalves de Lima\", \"Pereira de Oliveira Batista\", \"Dias de Freitas\", \"Ferreira\", \"Garcia da Paixão\", \"Lima Lopes\", \"Jesus da Silva\", \"da Silva de Lima\", \"da Silva Gonsalves Texeira\", \"Fernandes de Paula\", \"de Paula da Silva\", \"Barbosa de Mello Oliveira\", \"Oliveira Neto Conceição da Paixão\"];    \r",
+							"\r",
+							"    var randomItem = lastName[Math.floor(Math.random() * lastName.length)];\r",
+							"    \r",
+							"    return randomItem; }  \r",
+							" \r",
+							"pm.environment.set(\"LastName\",lastName());\r",
+							"\r",
+							"pm.environment.set(\"update\", pm.variables.get(\"Name\")+\" \" + pm.variables.get(\"LastName\"));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Token}}",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{   \r\n    \"nameProfile\": \"{{update}}\",\r\n    \"accessGroup\": 282,\r\n   \"audit\": [\r\n        {\r\n            \"loginUser\": \"{{LoginUser}}\",\r\n            \"registrationDate\": \"{{DateNow}}\",\r\n            \"registration\":\"{{Registration}}\",\r\n            \"idCompany\": \"{{IdCompany}}\"\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/accessProfiles/{{_id}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"accessProfiles",
+						"{{_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "API - AccessProfile - Delelte Id",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Token}}",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/accessProfiles/{{_id}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"accessProfiles",
+						"{{_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "API - AccessProfile - Required Field",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Token}}",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{   \"nameProfile\": \"\",\r\n    \"accessGroup\": \"\",\r\n    \"audit\": [\r\n        {\r\n            \"loginUser\": \"teste1@teste124.com.br\",\r\n            \"registrationDate\": \"2014-01-22T14:56:58.301Z\",\r\n            \"registration\": \"QaCoder-122\",\r\n            \"idCompany\": \"28.820.853/0001-99\"\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/accessProfiles",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"accessProfiles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"Token\", JSON.parse(responseBody).token)\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"mail\":\"murilo@qacoders-treinamento.com\",\r\n    \"password\": \"{{Password}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/logout",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"logout"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

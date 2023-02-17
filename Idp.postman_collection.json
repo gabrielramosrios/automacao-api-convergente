@@ -1,0 +1,425 @@
+{
+	"info": {
+		"_postman_id": "e432483e-4087-4416-a8ac-c58911fb691a",
+		"name": "Idp",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Signup",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"fullName\":\"Murilo Ryan de Sousa Mendes\", \r\n    \"mail\":\"murilo@qacoders-treinamento.com\", \r\n    \"idCompany\": \"28.458.256/0001-99\", \r\n    \"password\": \"Murilo@123\", \r\n    \"confirmPassword\": \"Murilo@123\", \r\n    \"accessProfile\": \"Admin\", \r\n      \"audit\": [ \r\n        { \r\n            \"loginUser\": \"teste@teste.com\" \r\n        } \r\n    ] \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/signup",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"Token\", JSON.parse(responseBody).token)\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"mail\":\"murilo@qacoders-treinamento.com\",\r\n    \"password\": \"Murilo@123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/login",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "API - IDP - Required Field",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"function firstName(){\r",
+							"    var firstName = [\"Miguel\",\"Sophia\",\"Davi\",\"Alice\", \"Arthur\",\"Julia\",\"Pedro\",\"Isabely\",\"Gabriel\",\"Manuela\",\"Laura\",\"Lucas\",\"Flavia\",\"Luiza\",\"Matues\",\"Noah\",\"Valentina\",\"Rafael\",\"Giovana\",\"Heitor\",\"Enzo\",\"Helena\",\"Guilherme\",\"Beatriz\",\"Nicolas\",\"Leticia\",\"Lorenzo\",\"Lara\",\"Gustavo\",\"Mariana\",\"Felipe\",\"Nicole\",\"Samuel\",\"Joice\",\"Dener\",\"Rafaela\",\"Augusto\",\"Heloisa\",\"Daniel\",\"Isadora\",\"Vitor\",\"Livia\",\"Leonardo\",\"Henrique\",\"Juliana\",\"Theo\",\"Lorena\",\"Murilo\",\"Gabriela\",\"Eduardo\",\"Yasmim\",\"Pedro\",\"Henriqueta\",\"Isabelly\",\"Pietro\",\"Sarah\",\"Kaua\",\"Jaqueline\",\"Isaac\",\"Leticia\",\"Caio\"\r",
+							"    ];\r",
+							"\r",
+							"    var randomItem = firstName[Math.floor(Math.random()* firstName.length)];\r",
+							"    return randomItem;\r",
+							"}\r",
+							"pm.environment.set(\"FirstName\",firstName());\r",
+							"\r",
+							"function lastName(){\r",
+							"    var lastName = [\"da silva\",\"dos santos\",\"Pereira\",\"Alves de queiroz\",\"Ferreira\",\"de Oliveira\",\"Silva\",\"Rodigues\",\"de Souza\",\"Gomes\",\"Santos\",\"Oliveira\",\"Ribeiro\",\"Martins\",\"Gonçalvez\",\"Soares\",\"Barbosa\",\"Lospes\",\"Vieira\",\"Souza\",\"Fernandes\",\"Lima\",\"Costa\",\"Batista\",\"Dias\",\"Moreira\",\"de lima\",\"das neves\", \"da costa\",\"de almeida\",\"mendes\",\"carvalho\",\"Araujo\"\r",
+							"    ];\r",
+							"    var randomItem = lastName[Math.floor(Math.random() * lastName.length)];\r",
+							"    return randomItem;\r",
+							"}\r",
+							"pm.environment.set(\"LastName\",lastName());\r",
+							"\r",
+							"pm.environment.set(\"FullName\", pm.variables.get(\"FirstName\")+\" \" + pm.variables.get(\"LastName\"));\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.environment.set(\"_ID\",JSON.parse(responseBody)._id);\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Token}}",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "\r\n{\r\n\r\n    \"professional\": [\r\n\r\n        {\r\n\r\n            \"fullName\": \"{{FullName}}\",\r\n\r\n            \"enrollmentDate\": \"{{DateNow}}\",\r\n\r\n            \"currentCompany\": \"Qa.Coders\",\r\n\r\n            \"seniority\": \"junior\",\r\n\r\n            \"companyTime\": \"8hrs\",\r\n\r\n            \"others\": \"string\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"myIdp\": [\r\n\r\n        {\r\n\r\n            \"desiredFunction\": \"string\",\r\n\r\n            \"others\": \": String, required\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"quality\": [\r\n\r\n        {\r\n\r\n            \"whatIsIt\": true,\r\n\r\n            \"personas\": true,\r\n\r\n            \"howToApply\": true,\r\n\r\n            \"others\": \"string\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"agileMethodology\": [\r\n\r\n        {\r\n\r\n            \"kanban\": true,\r\n\r\n            \"lean\": true,\r\n\r\n            \"scrum\": true,\r\n\r\n            \"smart\": true,\r\n\r\n            \"others\": \"teste\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"softwareTest\": [\r\n\r\n        {\r\n\r\n            \"bdd\": true,\r\n\r\n            \"testCase\": true,\r\n\r\n            \"testLifeCycle\": true,\r\n\r\n            \"testConcept\": true,\r\n\r\n            \"testPlan\": true,\r\n\r\n            \"requirements\": true,\r\n\r\n            \"whiteBoxTest\": true,\r\n\r\n            \"blackBoxTest\": true,\r\n\r\n            \"smokeBoxTest\": true,\r\n\r\n            \"integrationTest\": true,\r\n\r\n            \"performanceTest\": true,\r\n\r\n            \"regressionTest\": true,\r\n\r\n            \"securityTest\": true,\r\n\r\n            \"usabilityTest\": true,\r\n\r\n            \"functionalTest\": true,\r\n\r\n            \"nonFunctionalTest\": true,\r\n\r\n            \"unitTest\": true,\r\n\r\n            \"others\": \"teste\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"testTools\": [\r\n\r\n        {\r\n\r\n            \"postman\": true,\r\n\r\n            \"visualStudioCode\": true,\r\n\r\n            \"visualStudio\": true,\r\n\r\n            \"jmeter\": true,\r\n\r\n            \"blueStack\": true,\r\n\r\n            \"others\": \"teste\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"language\": [\r\n\r\n        {\r\n\r\n            \"cSharp\": true,\r\n\r\n            \"robotFramework\": true,\r\n\r\n            \"ruby\": true,\r\n\r\n            \"javaScript\": true,\r\n\r\n            \"git\": true,\r\n\r\n            \"mongoDB\": true,\r\n\r\n            \"SQL\": true,\r\n\r\n            \"others\": \"teste\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"projectManagement\": [\r\n\r\n        {\r\n\r\n            \"azureDevOps\": true,\r\n\r\n            \"jira\": true,\r\n\r\n            \"others\": \"teste\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"tecnology\": [\r\n\r\n        {\r\n\r\n            \"nodeJS\": true,\r\n\r\n            \"express\": true,\r\n\r\n            \"appium\": \"string\",\r\n\r\n            \"others\": \"String\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"devOps\": [\r\n\r\n        {\r\n\r\n            \"azureDevOps\": true,\r\n\r\n            \"gitHub\": true,\r\n\r\n            \"gitLab\": true,\r\n\r\n            \"others\": \"teste\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"manualTest\": [\r\n\r\n        {\r\n\r\n            \"api\": true,\r\n\r\n            \"app\": true,\r\n\r\n            \"web\": true,\r\n\r\n            \"others\": \"teste\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"automationTest\": [\r\n\r\n        {\r\n\r\n            \"api\": true,\r\n\r\n            \"appAndroid\": true,\r\n\r\n            \"web\": true,\r\n\r\n            \"others\": \"test\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"knowledgeBase\": [\r\n\r\n        {\r\n\r\n            \"DevOps\": \": String, required\",\r\n\r\n            \"testTools\": \": String, required\",\r\n\r\n            \"projectManagement\": \": String, required\",\r\n\r\n            \"languages\": \": String, required\",\r\n\r\n            \"agileMethodologies\": \": String, required\",\r\n\r\n            \"quality\": \": String, required\",\r\n\r\n            \"technologies\": \": String, required\",\r\n\r\n            \"softwareTest\": \": String, required\",\r\n\r\n            \"manualTest\": \": String, required\",\r\n\r\n            \"automatedTest\": \": String, required\",\r\n\r\n            \"others\": \": String, required\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"status\": true,\r\n\r\n    \"audit\": [\r\n\r\n        {\r\n\r\n            \"loginUser\": \"teste1@teste124.com.br\",\r\n\r\n            \"registrationDate\": \"2014-01-22T14:56:58.301Z\",\r\n\r\n            \"registration\": \"QaCoder-122\",\r\n\r\n            \"idCompany\": \"28.820.853/0001-99\"\r\n\r\n        }\r\n\r\n    ]\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/idps",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"idps"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "API  - IDP - Required Field -  First and Last Name",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"function firstName(){\r",
+							"    var firstName = [\"Miguel\",\"Sophia\",\"Davi\",\"Alice\", \"Arthur\",\"Julia\",\"Pedro\",\"Isabely\",\"Gabriel\",\"Manuela\",\"Laura\",\"Lucas\",\"Flavia\",\"Luiza\",\"Matues\",\"Noah\",\"Valentina\",\"Rafael\",\"Giovana\",\"Heitor\",\"Enzo\",\"Helena\",\"Guilherme\",\"Beatriz\",\"Nicolas\",\"Leticia\",\"Lorenzo\",\"Lara\",\"Gustavo\",\"Mariana\",\"Felipe\",\"Nicole\",\"Samuel\",\"Joice\",\"Dener\",\"Rafaela\",\"Augusto\",\"Heloisa\",\"Daniel\",\"Isadora\",\"Vitor\",\"Livia\",\"Leonardo\",\"Henrique\",\"Juliana\",\"Theo\",\"Lorena\",\"Murilo\",\"Gabriela\",\"Eduardo\",\"Yasmim\",\"Pedro\",\"Henriqueta\",\"Isabelly\",\"Pietro\",\"Sarah\",\"Kaua\",\"Jaqueline\",\"Isaac\",\"Leticia\",\"Caio\"\r",
+							"    ];\r",
+							"\r",
+							"    var randomItem = firstName[Math.floor(Math.random()* firstName.length)];\r",
+							"    return randomItem;\r",
+							"}\r",
+							"pm.environment.set(\"FirstName\", firstName());\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Token}}",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "\r\n{\r\n\r\n    \"professional\": [\r\n\r\n        {\r\n\r\n            \"fullName\": \"{{FirstName}}\",\r\n\r\n            \"enrollmentDate\": \"01/01/2022\",\r\n\r\n            \"currentCompany\": \"Qa.Coders\",\r\n\r\n            \"seniority\": \"junior\",\r\n\r\n            \"companyTime\": \"8hrs\",\r\n\r\n            \"others\": \"string\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"myIdp\": [\r\n\r\n        {\r\n\r\n            \"desiredFunction\": \"string\",\r\n\r\n            \"others\": \": String, required\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"quality\": [\r\n\r\n        {\r\n\r\n            \"whatIsIt\": true,\r\n\r\n            \"personas\": true,\r\n\r\n            \"howToApply\": true,\r\n\r\n            \"others\": \"string\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"agileMethodology\": [\r\n\r\n        {\r\n\r\n            \"kanban\": true,\r\n\r\n            \"lean\": true,\r\n\r\n            \"scrum\": true,\r\n\r\n            \"smart\": true,\r\n\r\n            \"others\": \"teste\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"softwareTest\": [\r\n\r\n        {\r\n\r\n            \"bdd\": true,\r\n\r\n            \"testCase\": true,\r\n\r\n            \"testLifeCycle\": true,\r\n\r\n            \"testConcept\": true,\r\n\r\n            \"testPlan\": true,\r\n\r\n            \"requirements\": true,\r\n\r\n            \"whiteBoxTest\": true,\r\n\r\n            \"blackBoxTest\": true,\r\n\r\n            \"smokeBoxTest\": true,\r\n\r\n            \"integrationTest\": true,\r\n\r\n            \"performanceTest\": true,\r\n\r\n            \"regressionTest\": true,\r\n\r\n            \"securityTest\": true,\r\n\r\n            \"usabilityTest\": true,\r\n\r\n            \"functionalTest\": true,\r\n\r\n            \"nonFunctionalTest\": true,\r\n\r\n            \"unitTest\": true,\r\n\r\n            \"others\": \"teste\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"testTools\": [\r\n\r\n        {\r\n\r\n            \"postman\": true,\r\n\r\n            \"visualStudioCode\": true,\r\n\r\n            \"visualStudio\": true,\r\n\r\n            \"jmeter\": true,\r\n\r\n            \"blueStack\": true,\r\n\r\n            \"others\": \"teste\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"language\": [\r\n\r\n        {\r\n\r\n            \"cSharp\": true,\r\n\r\n            \"robotFramework\": true,\r\n\r\n            \"ruby\": true,\r\n\r\n            \"javaScript\": true,\r\n\r\n            \"git\": true,\r\n\r\n            \"mongoDB\": true,\r\n\r\n            \"SQL\": true,\r\n\r\n            \"others\": \"teste\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"projectManagement\": [\r\n\r\n        {\r\n\r\n            \"azureDevOps\": true,\r\n\r\n            \"jira\": true,\r\n\r\n            \"others\": \"teste\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"tecnology\": [\r\n\r\n        {\r\n\r\n            \"nodeJS\": true,\r\n\r\n            \"express\": true,\r\n\r\n            \"appium\": \"string\",\r\n\r\n            \"others\": \"String\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"devOps\": [\r\n\r\n        {\r\n\r\n            \"azureDevOps\": true,\r\n\r\n            \"gitHub\": true,\r\n\r\n            \"gitLab\": true,\r\n\r\n            \"others\": \"teste\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"manualTest\": [\r\n\r\n        {\r\n\r\n            \"api\": true,\r\n\r\n            \"app\": true,\r\n\r\n            \"web\": true,\r\n\r\n            \"others\": \"teste\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"automationTest\": [\r\n\r\n        {\r\n\r\n            \"api\": true,\r\n\r\n            \"appAndroid\": true,\r\n\r\n            \"web\": true,\r\n\r\n            \"others\": \"test\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"knowledgeBase\": [\r\n\r\n        {\r\n\r\n            \"DevOps\": \": String, required\",\r\n\r\n            \"testTools\": \": String, required\",\r\n\r\n            \"projectManagement\": \": String, required\",\r\n\r\n            \"languages\": \": String, required\",\r\n\r\n            \"agileMethodologies\": \": String, required\",\r\n\r\n            \"quality\": \": String, required\",\r\n\r\n            \"technologies\": \": String, required\",\r\n\r\n            \"softwareTest\": \": String, required\",\r\n\r\n            \"manualTest\": \": String, required\",\r\n\r\n            \"automatedTest\": \": String, required\",\r\n\r\n            \"others\": \": String, required\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"status\": true,\r\n\r\n    \"audit\": [\r\n\r\n        {\r\n\r\n            \"loginUser\": \"teste1@teste124.com.br\",\r\n\r\n            \"registrationDate\": \"2014-01-22T14:56:58.301Z\",\r\n\r\n            \"registration\": \"QaCoder-122\",\r\n\r\n            \"idCompany\": \"28.820.853/0001-99\"\r\n\r\n        }\r\n\r\n    ]\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/idps",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"idps"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "API  - IDP - Required Field - Full Name",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"function firstName(){\r",
+							"    var firstName = [\"Miguel\",\"Sophia\",\"Davi\",\"Alice\", \"Arthur\",\"Julia\",\"Pedro\",\"Isabely\",\"Gabriel\",\"Manuela\",\"Laura\",\"Lucas\",\"Flavia\",\"Luiza\",\"Matues\",\"Noah\",\"Valentina\",\"Rafael\",\"Giovana\",\"Heitor\",\"Enzo\",\"Helena\",\"Guilherme\",\"Beatriz\",\"Nicolas\",\"Leticia\",\"Lorenzo\",\"Lara\",\"Gustavo\",\"Mariana\",\"Felipe\",\"Nicole\",\"Samuel\",\"Joice\",\"Dener\",\"Rafaela\",\"Augusto\",\"Heloisa\",\"Daniel\",\"Isadora\",\"Vitor\",\"Livia\",\"Leonardo\",\"Henrique\",\"Juliana\",\"Theo\",\"Lorena\",\"Murilo\",\"Gabriela\",\"Eduardo\",\"Yasmim\",\"Pedro\",\"Henriqueta\",\"Isabelly\",\"Pietro\",\"Sarah\",\"Kaua\",\"Jaqueline\",\"Isaac\",\"Leticia\",\"Caio\"\r",
+							"    ];\r",
+							"\r",
+							"    var randomItem = firstName[Math.floor(Math.random()* firstName.length)];\r",
+							"    return randomItem;\r",
+							"}\r",
+							"pm.environment.set(\"FirstName\", firstName());"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Token}}",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "\r\n{\r\n\r\n    \"professional\": [\r\n\r\n        {\r\n\r\n            \"fullName\": \"\",\r\n\r\n            \"enrollmentDate\": \"01/01/2022\",\r\n\r\n            \"currentCompany\": \"Qa.Coders\",\r\n\r\n            \"seniority\": \"junior\",\r\n\r\n            \"companyTime\": \"8hrs\",\r\n\r\n            \"others\": \"string\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"myIdp\": [\r\n\r\n        {\r\n\r\n            \"desiredFunction\": \"string\",\r\n\r\n            \"others\": \": String, required\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"quality\": [\r\n\r\n        {\r\n\r\n            \"whatIsIt\": true,\r\n\r\n            \"personas\": true,\r\n\r\n            \"howToApply\": true,\r\n\r\n            \"others\": \"string\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"agileMethodology\": [\r\n\r\n        {\r\n\r\n            \"kanban\": true,\r\n\r\n            \"lean\": true,\r\n\r\n            \"scrum\": true,\r\n\r\n            \"smart\": true,\r\n\r\n            \"others\": \"teste\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"softwareTest\": [\r\n\r\n        {\r\n\r\n            \"bdd\": true,\r\n\r\n            \"testCase\": true,\r\n\r\n            \"testLifeCycle\": true,\r\n\r\n            \"testConcept\": true,\r\n\r\n            \"testPlan\": true,\r\n\r\n            \"requirements\": true,\r\n\r\n            \"whiteBoxTest\": true,\r\n\r\n            \"blackBoxTest\": true,\r\n\r\n            \"smokeBoxTest\": true,\r\n\r\n            \"integrationTest\": true,\r\n\r\n            \"performanceTest\": true,\r\n\r\n            \"regressionTest\": true,\r\n\r\n            \"securityTest\": true,\r\n\r\n            \"usabilityTest\": true,\r\n\r\n            \"functionalTest\": true,\r\n\r\n            \"nonFunctionalTest\": true,\r\n\r\n            \"unitTest\": true,\r\n\r\n            \"others\": \"teste\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"testTools\": [\r\n\r\n        {\r\n\r\n            \"postman\": true,\r\n\r\n            \"visualStudioCode\": true,\r\n\r\n            \"visualStudio\": true,\r\n\r\n            \"jmeter\": true,\r\n\r\n            \"blueStack\": true,\r\n\r\n            \"others\": \"teste\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"language\": [\r\n\r\n        {\r\n\r\n            \"cSharp\": true,\r\n\r\n            \"robotFramework\": true,\r\n\r\n            \"ruby\": true,\r\n\r\n            \"javaScript\": true,\r\n\r\n            \"git\": true,\r\n\r\n            \"mongoDB\": true,\r\n\r\n            \"SQL\": true,\r\n\r\n            \"others\": \"teste\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"projectManagement\": [\r\n\r\n        {\r\n\r\n            \"azureDevOps\": true,\r\n\r\n            \"jira\": true,\r\n\r\n            \"others\": \"teste\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"tecnology\": [\r\n\r\n        {\r\n\r\n            \"nodeJS\": true,\r\n\r\n            \"express\": true,\r\n\r\n            \"appium\": \"string\",\r\n\r\n            \"others\": \"String\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"devOps\": [\r\n\r\n        {\r\n\r\n            \"azureDevOps\": true,\r\n\r\n            \"gitHub\": true,\r\n\r\n            \"gitLab\": true,\r\n\r\n            \"others\": \"teste\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"manualTest\": [\r\n\r\n        {\r\n\r\n            \"api\": true,\r\n\r\n            \"app\": true,\r\n\r\n            \"web\": true,\r\n\r\n            \"others\": \"teste\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"automationTest\": [\r\n\r\n        {\r\n\r\n            \"api\": true,\r\n\r\n            \"appAndroid\": true,\r\n\r\n            \"web\": true,\r\n\r\n            \"others\": \"test\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"knowledgeBase\": [\r\n\r\n        {\r\n\r\n            \"DevOps\": \": String, required\",\r\n\r\n            \"testTools\": \": String, required\",\r\n\r\n            \"projectManagement\": \": String, required\",\r\n\r\n            \"languages\": \": String, required\",\r\n\r\n            \"agileMethodologies\": \": String, required\",\r\n\r\n            \"quality\": \": String, required\",\r\n\r\n            \"technologies\": \": String, required\",\r\n\r\n            \"softwareTest\": \": String, required\",\r\n\r\n            \"manualTest\": \": String, required\",\r\n\r\n            \"automatedTest\": \": String, required\",\r\n\r\n            \"others\": \": String, required\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"status\": true,\r\n\r\n    \"audit\": [\r\n\r\n        {\r\n\r\n            \"loginUser\": \"teste1@teste124.com.br\",\r\n\r\n            \"registrationDate\": \"2014-01-22T14:56:58.301Z\",\r\n\r\n            \"registration\": \"QaCoder-122\",\r\n\r\n            \"idCompany\": \"28.820.853/0001-99\"\r\n\r\n        }\r\n\r\n    ]\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/idps",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"idps"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "API - IPD - Busca",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Token}}",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}/idps/?_id={{_ID}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"idps",
+						""
+					],
+					"query": [
+						{
+							"key": "_id",
+							"value": "{{_ID}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "API - IPD - PUT ID",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Token}}",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\r\n    \"professional\": [\r\n\r\n        {\r\n\r\n            \"fullName\": \"Murilo Ryan de Sousa Mendes QA\",\r\n\r\n            \"enrollmentDate\": \"02/01/2022\",\r\n\r\n            \"currentCompany\": \"Qa.Coders\",\r\n\r\n            \"seniority\": \"junior\",\r\n\r\n            \"companyTime\": \"8hrs\",\r\n\r\n            \"others\": \"string\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"myIdp\": [\r\n\r\n        {\r\n\r\n            \"desiredFunction\": \"string\",\r\n\r\n            \"others\": \": String, required\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"quality\": [\r\n\r\n        {\r\n\r\n            \"whatIsIt\": true,\r\n\r\n            \"personas\": true,\r\n\r\n            \"howToApply\": true,\r\n\r\n            \"others\": \"string\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"agileMethodology\": [\r\n\r\n        {\r\n\r\n            \"kanban\": true,\r\n\r\n            \"lean\": true,\r\n\r\n            \"scrum\": true,\r\n\r\n            \"smart\": true,\r\n\r\n            \"others\": \"teste\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"softwareTest\": [\r\n\r\n        {\r\n\r\n            \"bdd\": true,\r\n\r\n            \"testCase\": true,\r\n\r\n            \"testLifeCycle\": true,\r\n\r\n            \"testConcept\": true,\r\n\r\n            \"testPlan\": true,\r\n\r\n            \"requirements\": true,\r\n\r\n            \"whiteBoxTest\": true,\r\n\r\n            \"blackBoxTest\": true,\r\n\r\n            \"smokeBoxTest\": true,\r\n\r\n            \"integrationTest\": true,\r\n\r\n            \"performanceTest\": true,\r\n\r\n            \"regressionTest\": true,\r\n\r\n            \"securityTest\": true,\r\n\r\n            \"usabilityTest\": true,\r\n\r\n            \"functionalTest\": true,\r\n\r\n            \"nonFunctionalTest\": true,\r\n\r\n            \"unitTest\": true,\r\n\r\n            \"others\": \"teste\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"testTools\": [\r\n\r\n        {\r\n\r\n            \"postman\": true,\r\n\r\n            \"visualStudioCode\": true,\r\n\r\n            \"visualStudio\": true,\r\n\r\n            \"jmeter\": true,\r\n\r\n            \"blueStack\": true,\r\n\r\n            \"others\": \"teste\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"language\": [\r\n\r\n        {\r\n\r\n            \"cSharp\": true,\r\n\r\n            \"robotFramework\": true,\r\n\r\n            \"ruby\": true,\r\n\r\n            \"javaScript\": true,\r\n\r\n            \"git\": true,\r\n\r\n            \"mongoDB\": true,\r\n\r\n            \"SQL\": true,\r\n\r\n            \"others\": \"teste\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"projectManagement\": [\r\n\r\n        {\r\n\r\n            \"azureDevOps\": true,\r\n\r\n            \"jira\": true,\r\n\r\n            \"others\": \"teste\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"tecnology\": [\r\n\r\n        {\r\n\r\n            \"nodeJS\": true,\r\n\r\n            \"express\": true,\r\n\r\n            \"appium\": \"string\",\r\n\r\n            \"others\": \"String\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"devOps\": [\r\n\r\n        {\r\n\r\n            \"azureDevOps\": true,\r\n\r\n            \"gitHub\": true,\r\n\r\n            \"gitLab\": true,\r\n\r\n            \"others\": \"teste\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"manualTest\": [\r\n\r\n        {\r\n\r\n            \"api\": true,\r\n\r\n            \"app\": true,\r\n\r\n            \"web\": true,\r\n\r\n            \"others\": \"teste\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"automationTest\": [\r\n\r\n        {\r\n\r\n            \"api\": true,\r\n\r\n            \"appAndroid\": true,\r\n\r\n            \"web\": true,\r\n\r\n            \"others\": \"test\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"knowledgeBase\": [\r\n\r\n        {\r\n\r\n            \"DevOps\": \": String, required\",\r\n\r\n            \"testTools\": \": String, required\",\r\n\r\n            \"projectManagement\": \": String, required\",\r\n\r\n            \"languages\": \": String, required\",\r\n\r\n            \"agileMethodologies\": \": String, required\",\r\n\r\n            \"quality\": \": String, required\",\r\n\r\n            \"technologies\": \": String, required\",\r\n\r\n            \"softwareTest\": \": String, required\",\r\n\r\n            \"manualTest\": \": String, required\",\r\n\r\n            \"automatedTest\": \": String, required\",\r\n\r\n            \"others\": \": String, required\"\r\n\r\n        }\r\n\r\n    ],\r\n\r\n    \"status\": true,\r\n\r\n    \"audit\": [\r\n\r\n        {\r\n\r\n            \"loginUser\": \"teste1@teste124.com.br\",\r\n\r\n            \"registrationDate\": \"2014-01-22T14:56:58.301Z\",\r\n\r\n            \"registration\": \"QaCoder-122\",\r\n\r\n            \"idCompany\": \"28.820.853/0001-99\"\r\n\r\n        }\r\n\r\n    ]\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/idps/{{_ID}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"idps",
+						"{{_ID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "API - IPD - Delete",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{Token}}",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/idps/{{_ID}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"idps",
+						"{{_ID}}"
+					],
+					"query": [
+						{
+							"key": "_id",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
