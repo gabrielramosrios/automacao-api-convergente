@@ -37,7 +37,7 @@ jobs:
         
         # Runs a set of commands using the runners shell
       - name: Step 3 Execute collection
-        run: newman AcessProfile.postman_collection.json --environment Qa.postman_environment.json --global-var "token={{token}}" --export-environment environment.json --reporters cli,html
+        run: newman AcessProfile.postman_collection.json --environment Qa.postman_environment.json --global-var "token={{token}}" --export-environment environment.json --reporters cli, -r htmlextra --reporter-htmlextra-export ./results/Report.html
 
      
      # Runs a set of commands using the runners shell
