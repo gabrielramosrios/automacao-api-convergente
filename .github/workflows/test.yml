@@ -37,9 +37,9 @@ jobs:
         
         # Runs a set of commands using the runners shell
       - name: Step 3 Execute collection
-        run: newman run ./accessprofile-ci.json -e ./qa-env.json --reporters cli, -r htmlextra --reporter-htmlextra-export Report.html 
+      #  run: newman run ./accessprofile-ci.json -e ./qa-env.json --reporters cli, -r htmlextra --reporter-htmlextra-export ./results/Report.html 
 
-
+    run: newman AcessProfile.postman_collection.json -e --environment Qa.postman_environment.json --global-var "token={{token}}" --reporters cli, -r htmlextra --reporter-htmlextra-export ./results/Report.html
 
      
       # Runs a set of commands using the runners shell
@@ -47,4 +47,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
             name: Report
-            path: Report.html
+            path: ./results/Report.html
