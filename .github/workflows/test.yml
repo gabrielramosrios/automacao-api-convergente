@@ -38,7 +38,7 @@ jobs:
         # Runs a set of commands using the runners shell
       - name: Step 3 Execute collection
       
-        run: /bin/env -c newman run ./accessprofile-ci.json /usr/bin/bash -e ./qa-env.json --reporters cli, -r htmlextra --reporter-htmlextra-export ./results/Report.html
+        run: /bin/env bash -c newman run ./accessprofile-ci.json /usr/bin/bash -e ./qa-env.json --reporters cli, -r htmlextra --reporter-htmlextra-export ./results/Report.html
       #  run: newman run ./accessprofile-ci.json -e ./qa-env.json --global-var "token={{token}}" --reporters cli, -r htmlextra --reporter-htmlextra-export ./results/Report.html
 
      
